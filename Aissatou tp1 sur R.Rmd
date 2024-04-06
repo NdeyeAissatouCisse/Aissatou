@@ -1,0 +1,50 @@
+---
+title: "Aissatou_Rojet"
+author: "Aissatou CISSE"
+date: "2024-04-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readxl)
+Projet <- read_excel("TP 1/Base_Projet.xlsx")
+View(Projet)
+dim(Projet)
+```
+le nombre de lignes est de 250 et le nombre de colonnes est de 33
+```{r}
+sum(is.na(Projet$key))
+```
+il n'y a pas de valeurs manquantes pour la variable key dans la base projet.
+```{r}
+library(dplyr)
+Projet=Projet%>%rename(region=q1, departement=q2,sexe=q23)
+#view(Projet)
+
+```
+```{r}
+Projet=Projet %>%mutate(sexe_2=case_when(sexe=="Femme"~1, sexe!="Femme"~0))
+
+
+```
+```{r}
+langues=data.frame(Projet%>%select("key"), Projet%>%select(starts_with("q24a_")))
+View(langues)
+```
+```{r}
+langues=langues%>%mutate(parle=rowSums(langues%>%select(starts_with("q24a_"))))
+```
+```{r}
+langues=langues%>%select(c("key","parle"))
+View(langues)
+```
+```{r}
+data=inner_join(x=Projet,y=langues, join_by(x$key==y$key))
+View(data)
+```
+
+
